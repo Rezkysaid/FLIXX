@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TrendVault</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body,#root{height:100%}
+    body{background:#000;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;color:#f5f5f7}
+    input,select,textarea,button{font-family:inherit}
+    input::placeholder,textarea::placeholder{color:#636366}
+    ::-webkit-scrollbar{width:0;height:0}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pop{0%{opacity:0;transform:scale(0.9)}100%{opacity:1;transform:scale(1)}}
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
+    @keyframes drift{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .card{animation:fadeUp 0.3s ease both}
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// Firebase
+firebase.initializeApp({
+  apiKey: "AIzaSyAjR9deZ7Bj13Bi2F8u_vq2",
+  authDomain: "trendvault-f7e7e.firebaseapp.com",
+  databaseURL: "https://trendvault-f7e7e-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "trendvault-f7e7e",
+  storageBucket: "trendvault-f7e7e.firebasestorage.app",
+  messagingSenderId: "367792379711",
+  appId: "1:367792379711:web:a2e8764f1b"
+});
+const db = firebase.database();
+
+
+// ── TRANSLATIONS ──
+const LANG = {
+  ms: {
+    appSub:      "INSPIRASI VIDEO",
+    save:        "+ Simpan",
+    all:         "Semua",
+    latest:      "Terbaru",
+    topRated:    "Terbaik",
+    search:      "Cari...",
+    vaultEmpty:  "Vault Kosong",
+    vaultDesc:   "Simpan video trending dari TikTok, Instagram & Facebook untuk dijadikan inspirasi team kau",
+    saveFirst:   "+ Simpan Video Pertama",
+    connecting:  "Menyambung...",
+    saveVideo:   "Simpan Video",
+    saveSubtitle:"Tambah ke TrendVault",
+    urlLabel:    "URL VIDEO",
+    titleLabel:  "TAJUK",
+    savedByLabel:"DISIMPAN OLEH",
+    notesLabel:  "NOTA",
+    catLabel:    "KATEGORI",
+    ratingLabel: "PENILAIAN",
+    simpan:      "Simpan →",
+    saving:      "Menyimpan...",
+    urlPh:       "https://tiktok.com/@...",
+    titlePh:     "Apa yang menarik?",
+    savedByPh:   "Nama kau",
+    notesPh:     "Nota pasal video ni...",
+    comment:     "Tulis komen...",
+    noComment:   "Belum ada komen",
+    builtBy:     "Dibina oleh",
+    updated:     "Dikemaskini ✓",
+    removed:     "Dipadam",
+    saved:       "Disimpan! 🔥",
+    statuses:    ["Disimpan","Sedang Dibuat","Digunakan"],
+    cats:        ["Hook","Transisi","Demo Produk","Penceritaan","Audio Trending","CTA","Lain-lain"],
+  },
+  en: {
+    appSub:      "VIDEO INSPIRATION",
+    save:        "+ Save",
+    all:         "All",
+    latest:      "Latest",
+    topRated:    "Top Rated",
+    search:      "Search...",
+    vaultEmpty:  "Vault Empty",
+    vaultDesc:   "Save trending videos from TikTok, Instagram & Facebook as inspiration for your team",
+    saveFirst:   "+ Save First Video",
+    connecting:  "Connecting...",
+    saveVideo:   "Save Video",
+    saveSubtitle:"Add to TrendVault",
+    urlLabel:    "VIDEO URL",
+    titleLabel:  "TITLE",
+    savedByLabel:"SAVED BY",
+    notesLabel:  "NOTES",
+    catLabel:    "CATEGORY",
+    ratingLabel: "RATING",
+    simpan:      "Save →",
+    saving:      "Saving...",
+    urlPh:       "https://tiktok.com/@...",
+    titlePh:     "What's interesting about this?",
+    savedByPh:   "Your name",
+    notesPh:     "Notes about this video...",
+    comment:     "Write a comment...",
+    noComment:   "No comments yet",
+    builtBy:     "Built by",
+    updated:     "Updated ✓",
+    removed:     "Removed",
+    saved:       "Saved! 🔥",
+    statuses:    ["Saved","In Progress","Used"],
+    cats:        ["Hook","Transition","Product Demo","Storytelling","Trending Audio","CTA","Others"],
+  },
+  zh: {
+    appSub:      "视频灵感库",
+    save:        "+ 保存",
+    all:         "全部",
+    latest:      "最新",
+    topRated:    "最高评分",
+    search:      "搜索...",
+    vaultEmpty:  "库是空的",
+    vaultDesc:   "保存来自TikTok、Instagram和Facebook的热门视频，作为团队的创作灵感",
+    saveFirst:   "+ 保存第一个视频",
+    connecting:  "连接中...",
+    saveVideo:   "保存视频",
+    saveSubtitle:"添加到 TrendVault",
+    urlLabel:    "视频链接",
+    titleLabel:  "标题",
+    savedByLabel:"保存者",
+    notesLabel:  "备注",
+    catLabel:    "类别",
+    ratingLabel: "评分",
+    simpan:      "保存 →",
+    saving:      "保存中...",
+    urlPh:       "https://tiktok.com/@...",
+    titlePh:     "这个视频有什么亮点？",
+    savedByPh:   "你的名字",
+    notesPh:     "关于这个视频的备注...",
+    comment:     "写评论...",
+    noComment:   "暂无评论",
+    builtBy:     "由...构建",
+    updated:     "已更新 ✓",
+    removed:     "已删除",
+    saved:       "已保存! 🔥",
+    statuses:    ["已保存","进行中","已使用"],
+    cats:        ["钩子","转场","产品演示","故事叙述","热门音乐","行动号召","其他"],
+  },
+};
+
+const LANG_LABELS = { ms:"BM", en:"EN", zh:"中文" };
+
+// Design tokens
+const P = {
+  TikTok:    {accent:"#FE2C55",glow:"rgba(254,44,85,0.25)",grad:"linear-gradient(135deg,#FE2C55,#FF7043)"},
+  Instagram: {accent:"#B33AB4",glow:"rgba(179,58,180,0.25)",grad:"linear-gradient(135deg,#833AB4,#C13584,#E1306C)"},
+  Facebook:  {accent:"#1877F2",glow:"rgba(24,119,242,0.25)",grad:"linear-gradient(135deg,#1565C0,#1877F2)"},
+};
+const STATUS = {
+  Saved:       {color:"#8E8E93",dot:"#8E8E93",bg:"rgba(255,255,255,0.06)"},
+  "In Progress":{color:"#FF9F0A",dot:"#FF9F0A",bg:"rgba(255,159,10,0.12)"},
+  Used:        {color:"#30D158",dot:"#30D158",bg:"rgba(48,209,88,0.12)"},
+};
+const STATUSES   = ["Saved","In Progress","Used"];
+const CATEGORIES = ["Hook","Transition","Product Demo","Storytelling","Trending Audio","CTA","Lain-lain"];
+
+function Stars({val,onChange}) {
+  const [h,setH] = useState(0);
+  return (
+    <div style={{display:"flex",gap:2}}>
+      {[1,2,3,4,5].map(s=>(
+        <span key={s}
+          onMouseEnter={()=>onChange&&setH(s)}
+          onMouseLeave={()=>onChange&&setH(0)}
+          onClick={()=>onChange&&onChange(s)}
+          style={{fontSize:15,cursor:onChange?"pointer":"default",
+            color:s<=(h||val)?"#FF9F0A":"rgba(255,255,255,0.15)",
+            display:"inline-block",transition:"all 0.1s",
+            transform:s<=(h||val)?"scale(1.2)":"scale(1)"}}>★</span>
+      ))}
+    </div>
+  );
+}
+
+function Card({v,onUpdate,onDelete,t}) {
+  const [showC,setShowC] = useState(false);
+  const [txt,setTxt]     = useState("");
+  const cardRef = useRef(null);
+  const p = P[v.platform] || P.TikTok;
+  const s = STATUS[v.status] || STATUS.Saved;
+
+  const tilt = e => {
+    const r = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX-r.left)/r.width - 0.5;
+    const y = (e.clientY-r.top)/r.height  - 0.5;
+    cardRef.current.style.transform = `perspective(800px) rotateY(${x*8}deg) rotateX(${-y*8}deg) scale(1.01)`;
+  };
+  const resetTilt = () => { cardRef.current.style.transform = ""; };
+
+  const cycleStatus = () => {
+    const i = STATUSES.indexOf(v.status);
+    onUpdate(v.key,{status:STATUSES[(i+1)%STATUSES.length]});
+  };
+
+  const postComment = () => {
+    if(!txt.trim()) return;
+    onUpdate(v.key,{comments:[...(v.comments||[]),txt.trim()]});
+    setTxt("");
+  };
+
+  return (
+    <div ref={cardRef} className="card" onMouseMove={tilt} onMouseLeave={resetTilt}
+      style={{transition:"transform 0.15s ease",borderRadius:20,overflow:"hidden",
+        background:"rgba(28,28,30,0.9)",
+        border:"1px solid rgba(255,255,255,0.08)",
+        boxShadow:"0 4px 24px rgba(0,0,0,0.5)"}}>
+
+      {/* Thumbnail */}
+      <div onClick={()=>window.open(v.url,"_blank")}
+        style={{height:155,cursor:"pointer",position:"relative",overflow:"hidden",
+          background:`linear-gradient(135deg,#1c1c1e,${p.accent}22)`}}>
+        <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 75% 25%,${p.accent}20,transparent 60%)`}}/>
+        <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div style={{width:50,height:50,borderRadius:"50%",
+            background:"rgba(255,255,255,0.08)",border:"1.5px solid rgba(255,255,255,0.2)",
+            display:"flex",alignItems:"center",justifyContent:"center",
+            fontSize:18,color:"rgba(255,255,255,0.8)",transition:"all 0.2s"}}
+            onMouseEnter={e=>{e.currentTarget.style.background="rgba(255,255,255,0.15)";e.currentTarget.style.transform="scale(1.1)";}}
+            onMouseLeave={e=>{e.currentTarget.style.background="rgba(255,255,255,0.08)";e.currentTarget.style.transform="";}}>▶</div>
+        </div>
+        <div style={{position:"absolute",top:10,left:10,right:10,display:"flex",justifyContent:"space-between"}}>
+          <span style={{background:`${p.accent}22`,border:`1px solid ${p.accent}55`,
+            borderRadius:6,padding:"3px 8px",fontSize:9,fontWeight:800,letterSpacing:1.2,color:p.accent}}>
+            {v.platform?.toUpperCase()}
+          </span>
+          <span style={{background:"rgba(0,0,0,0.5)",border:"1px solid rgba(255,255,255,0.1)",
+            borderRadius:6,padding:"3px 8px",fontSize:9,color:"rgba(255,255,255,0.7)"}}>
+            {v.category}
+          </span>
+        </div>
+        <div style={{position:"absolute",bottom:0,left:0,right:0,height:48,
+          background:"linear-gradient(to top,rgba(28,28,30,0.95),transparent)"}}/>
+      </div>
+
+      {/* Body */}
+      <div style={{padding:"14px 16px 16px"}}>
+        <div style={{fontSize:14,fontWeight:700,color:"#f5f5f7",lineHeight:1.45,marginBottom:10,letterSpacing:-0.2}}>
+          {v.title}
+        </div>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
+          <Stars val={v.rating||0} onChange={r=>onUpdate(v.key,{rating:r})}/>
+          <span onClick={cycleStatus} style={{background:s.bg,border:`1px solid ${s.dot}44`,
+            borderRadius:6,padding:"3px 10px",fontSize:10,fontWeight:700,color:s.color,
+            cursor:"pointer",userSelect:"none",display:"inline-flex",alignItems:"center",gap:5}}>
+            <span style={{width:5,height:5,borderRadius:"50%",background:s.dot,
+              animation:v.status==="In Progress"?"blink 1.3s infinite":"none"}}/>
+            {v.status}
+          </span>
+        </div>
+
+        {v.notes && (
+          <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",
+            borderLeft:`2px solid ${p.accent}66`,borderRadius:8,padding:"8px 10px",
+            fontSize:12,color:"#aeaeb2",lineHeight:1.5,marginBottom:10}}>{v.notes}</div>
+        )}
+
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <span style={{fontSize:11,color:"#636366"}}>
+            <strong style={{color:"#8e8e93"}}>{v.savedBy}</strong> · {v.savedAt}
+          </span>
+          <div style={{display:"flex",gap:12}}>
+            <button onClick={()=>setShowC(!showC)}
+              style={{background:"none",border:"none",cursor:"pointer",padding:0,
+                fontSize:12,color:showC?p.accent:"#636366",transition:"color 0.15s"}}>
+              💬 {(v.comments||[]).length}
+            </button>
+            <button onClick={()=>onDelete(v.key)}
+              style={{background:"none",border:"none",cursor:"pointer",padding:0,
+                fontSize:12,color:"#636366",transition:"color 0.15s"}}
+              onMouseEnter={e=>e.currentTarget.style.color="#ff453a"}
+              onMouseLeave={e=>e.currentTarget.style.color="#636366"}>✕</button>
+          </div>
+        </div>
+
+        {showC && (
+          <div style={{marginTop:10}}>
+            {(v.comments||[]).map((c,i)=>(
+              <div key={i} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",
+                borderRadius:8,padding:"6px 10px",fontSize:12,color:"#aeaeb2",marginBottom:4}}>{c}</div>
+            ))}
+            <div style={{display:"flex",gap:6,marginTop:6}}>
+              <input value={txt} onChange={e=>setTxt(e.target.value)}
+                onKeyDown={e=>e.key==="Enter"&&postComment()}
+                placeholder={t.comment}
+                style={{flex:1,background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",
+                  borderRadius:8,padding:"7px 10px",color:"#f5f5f7",fontSize:12,outline:"none"}}/>
+              <button onClick={postComment}
+                style={{background:p.grad,border:"none",borderRadius:8,padding:"7px 13px",
+                  color:"#fff",fontSize:12,fontWeight:800,cursor:"pointer"}}>↑</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Modal({onAdd,onClose,t,lang}) {
+  const [f,setF] = useState({url:"",title:"",platform:"TikTok",category:"Hook",notes:"",rating:3,savedBy:"Ali"});
+  const [saving,setSaving] = useState(false);
+  const set = (k,v) => setF(x=>({...x,[k]:v}));
+  const p = P[f.platform];
+
+  const submit = async() => {
+    if(!f.url.trim()||!f.title.trim()) return;
+    setSaving(true);
+    try {
+      await db.ref("videos").push({
+        ...f, status:"Saved", comments:[],
+        savedAt: new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short"}),
+        createdAt: Date.now()
+      });
+      onClose();
+    } catch(e){ console.error(e); }
+    setSaving(false);
+  };
+
+  const inp = {
+    width:"100%",background:"rgba(255,255,255,0.06)",
+    border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,
+    padding:"10px 12px",color:"#f5f5f7",fontSize:13,outline:"none"
+  };
+
+  return (
+    <div style={{position:"fixed",inset:0,zIndex:200,
+      background:"rgba(0,0,0,0.7)",backdropFilter:"blur(12px)",
+      display:"flex",alignItems:"flex-end",justifyContent:"center"}}
+      onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div style={{width:"100%",maxWidth:520,
+        background:"#1c1c1e",borderRadius:"22px 22px 0 0",
+        borderTop:"1px solid rgba(255,255,255,0.1)",
+        padding:"0 22px 40px",maxHeight:"92vh",overflowY:"auto",
+        animation:"slideUp 0.3s cubic-bezier(0.32,0.72,0,1)"}}>
+
+        <div style={{display:"flex",justifyContent:"center",padding:"14px 0 10px"}}>
+          <div style={{width:36,height:4,borderRadius:2,background:"rgba(255,255,255,0.2)"}}/>
+        </div>
+
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
+          <div>
+            <div style={{fontSize:20,fontWeight:900,color:"#f5f5f7",letterSpacing:-0.5}}>{t.saveVideo}</div>
+            <div style={{fontSize:11,color:"#636366",marginTop:2}}>{t.saveSubtitle}</div>
+          </div>
+          <button onClick={onClose} style={{width:30,height:30,borderRadius:"50%",
+            background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.1)",
+            color:"#aeaeb2",cursor:"pointer",fontSize:14,
+            display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+        </div>
+
+        {/* Platform */}
+        <div style={{marginBottom:16}}>
+          <div style={{fontSize:10,fontWeight:700,color:"#636366",letterSpacing:1.8,marginBottom:8}}>PLATFORM</div>
+          <div style={{display:"flex",gap:8}}>
+            {["TikTok","Instagram","Facebook"].map(pl=>{
+              const pp=P[pl]; const sel=f.platform===pl;
+              return <button key={pl} onClick={()=>set("platform",pl)} style={{
+                flex:1,padding:"10px 0",cursor:"pointer",
+                background:sel?`${pp.accent}15`:"rgba(255,255,255,0.05)",
+                border:`1.5px solid ${sel?pp.accent+"55":"rgba(255,255,255,0.08)"}`,
+                borderRadius:12,color:sel?pp.accent:"#636366",
+                fontSize:12,fontWeight:800,
+                boxShadow:sel?`0 0 16px ${pp.glow}`:"none",
+                transition:"all 0.2s"}}>{pl}</button>;
+            })}
+          </div>
+        </div>
+
+        {[
+          {label:t.urlLabel,key:"url",ph:t.urlPh,ta:false},
+          {label:t.titleLabel,key:"title",ph:t.titlePh,ta:false},
+          {label:t.savedByLabel,key:"savedBy",ph:t.savedByPh,ta:false},
+          {label:t.notesLabel,key:"notes",ph:t.notesPh,ta:true},
+        ].map(({label,key,ph,ta})=>(
+          <div key={key} style={{marginBottom:14}}>
+            <div style={{fontSize:10,fontWeight:700,color:"#636366",letterSpacing:1.8,marginBottom:6}}>{label}</div>
+            {ta
+              ? <textarea value={f[key]} onChange={e=>set(key,e.target.value)} placeholder={ph} rows={2}
+                  style={{...inp,resize:"none"}}
+                  onFocus={e=>e.target.style.border=`1px solid ${p.accent}66`}
+                  onBlur={e=>e.target.style.border="1px solid rgba(255,255,255,0.1)"}/>
+              : <input value={f[key]} onChange={e=>set(key,e.target.value)} placeholder={ph}
+                  style={inp}
+                  onFocus={e=>e.target.style.border=`1px solid ${p.accent}66`}
+                  onBlur={e=>e.target.style.border="1px solid rgba(255,255,255,0.1)"}/>
+            }
+          </div>
+        ))}
+
+        <div style={{display:"flex",gap:12,marginBottom:22,alignItems:"flex-end"}}>
+          <div style={{flex:1}}>
+            <div style={{fontSize:10,fontWeight:700,color:"#636366",letterSpacing:1.8,marginBottom:6}}>{t.catLabel}</div>
+            <select value={f.category} onChange={e=>set("category",e.target.value)} style={{...inp,cursor:"pointer"}}>
+              {(t.cats||CATEGORIES).map(c=><option key={c} style={{background:"#1c1c1e"}}>{c}</option>)}
+            </select>
+          </div>
+          <div style={{paddingBottom:8}}>
+            <div style={{fontSize:10,fontWeight:700,color:"#636366",letterSpacing:1.8,marginBottom:8}}>{t.ratingLabel}</div>
+            <Stars val={f.rating} onChange={r=>set("rating",r)}/>
+          </div>
+        </div>
+
+        <button onClick={submit} disabled={saving} style={{
+          width:"100%",background:saving?"rgba(255,255,255,0.1)":p.grad,
+          border:"none",borderRadius:14,padding:"14px",
+          color:saving?"#636366":"#fff",fontSize:14,fontWeight:800,
+          cursor:saving?"not-allowed":"pointer",
+          boxShadow:saving?"none":`0 8px 20px ${p.glow}`,
+          transition:"all 0.15s"}}>
+          {saving?t.saving:t.simpan}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [lang, setLang] = useState("ms");
+  const t = LANG[lang];
+  const [videos,   setVideos]   = useState([]);
+  const [loading,  setLoading]  = useState(true);
+  const [error,    setError]    = useState(null);
+  const [filter,   setFilter]   = useState("All");
+  const [search,   setSearch]   = useState("");
+  const [sort,     setSort]     = useState("latest");
+  const [modal,    setModal]    = useState(false);
+  const [toast,    setToast]    = useState(null);
+
+  useEffect(()=>{
+    const ref = db.ref("videos");
+    ref.on("value", snap=>{
+      try {
+        const d = snap.val();
+        if(d){
+          const arr = Object.entries(d).map(([k,v])=>({...v,key:k}));
+          setVideos(arr.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)));
+        } else { setVideos([]); }
+        setLoading(false);
+      } catch(e){ setError(e.message); setLoading(false); }
+    }, e=>{ setError(e.message); setLoading(false); });
+    return ()=>ref.off();
+  },[]);
+
+  const showToast = msg=>{ setToast(msg); setTimeout(()=>setToast(null),2000); };
+  const updateVideo = (key,ch)=>{ db.ref(`videos/${key}`).update(ch); showToast(t.updated); };
+  const deleteVideo = key=>{ db.ref(`videos/${key}`).remove(); showToast(t.removed); };
+
+  const list = videos
+    .filter(v=>filter==="All"||v.platform===filter)
+    .filter(v=>!search||v.title?.toLowerCase().includes(search.toLowerCase())||v.notes?.toLowerCase().includes(search.toLowerCase()))
+    .sort((a,b)=>sort==="rating"?(b.rating||0)-(a.rating||0):(b.createdAt||0)-(a.createdAt||0));
+
+  const stats = {
+    total: videos.length,
+    prog:  videos.filter(v=>v.status==="In Progress").length,
+    used:  videos.filter(v=>v.status==="Used").length,
+  };
+
+  return (
+    <div style={{minHeight:"100vh",background:"#000",color:"#f5f5f7",position:"relative"}}>
+
+      {/* Ambient blobs */}
+      <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",overflow:"hidden"}}>
+        {[
+          {s:400,t:"-5%",l:"60%",c:"#1c1c2e",d:8},
+          {s:300,t:"50%",l:"-5%",c:"#1a1a2a",d:11},
+          {s:220,t:"70%",l:"70%",c:"#1e1a2a",d:9},
+        ].map((b,i)=>(
+          <div key={i} style={{position:"absolute",width:b.s,height:b.s,top:b.t,left:b.l,
+            borderRadius:"50%",background:`radial-gradient(circle,${b.c} 0%,transparent 70%)`,
+            filter:"blur(60px)",animation:`drift ${b.d}s ease-in-out infinite`,animationDelay:`${i}s`}}/>
+        ))}
+      </div>
+
+      {/* Toast */}
+      {toast&&(
+        <div style={{position:"fixed",top:20,left:"50%",transform:"translateX(-50%)",
+          zIndex:300,background:"rgba(28,28,30,0.95)",backdropFilter:"blur(20px)",
+          border:"1px solid rgba(255,255,255,0.12)",borderRadius:20,
+          padding:"8px 20px",fontSize:13,fontWeight:600,color:"#f5f5f7",
+          animation:"pop 0.2s ease",boxShadow:"0 8px 32px rgba(0,0,0,0.5)",
+          whiteSpace:"nowrap",zIndex:999}}>{toast}</div>
+      )}
+
+      {/* Header */}
+      <div style={{position:"sticky",top:0,zIndex:100,
+        background:"rgba(0,0,0,0.85)",backdropFilter:"blur(30px)",
+        borderBottom:"1px solid rgba(255,255,255,0.08)"}}>
+
+        <div style={{padding:"13px 18px 10px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
+          <div>
+            <div style={{fontSize:20,fontWeight:900,letterSpacing:-0.8,color:"#f5f5f7"}}>TrendVault</div>
+            <div style={{fontSize:8.5,letterSpacing:2.8,color:"#636366",fontWeight:600,marginTop:1}}>{t.appSub}</div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:7,flexShrink:0}}>
+            {[{v:stats.total,c:"#8e8e93"},{v:stats.prog,c:"#FF9F0A"},{v:stats.used,c:"#30D158"}].map((s,i)=>(
+              <div key={i} style={{background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.1)",
+                borderRadius:20,padding:"4px 12px",fontSize:14,fontWeight:800,color:s.c}}>{s.v}</div>
+            ))}
+            <button onClick={()=>setModal(true)} style={{
+              background:"linear-gradient(135deg,#FE2C55,#D81B60)",border:"none",
+              borderRadius:12,padding:"9px 16px",color:"#fff",fontWeight:800,fontSize:13,
+              cursor:"pointer",whiteSpace:"nowrap",
+              boxShadow:"0 4px 14px rgba(254,44,85,0.4)",transition:"all 0.15s"}}
+              onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-1px)";e.currentTarget.style.boxShadow="0 7px 20px rgba(254,44,85,0.5)";}}
+              onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow="0 4px 14px rgba(254,44,85,0.4)";}}>
+              {t.save}
+            </button>
+          </div>
+        </div>
+
+        {/* Lang switcher */}
+        <div style={{display:"flex",gap:5,padding:"2px 18px 10px"}}>
+          {Object.entries(LANG_LABELS).map(([code,label])=>(
+            <button key={code} onClick={()=>setLang(code)} style={{
+              padding:"4px 13px",borderRadius:20,fontSize:11,fontWeight:700,cursor:"pointer",
+              border:`1px solid ${lang===code?"rgba(255,255,255,0.3)":"rgba(255,255,255,0.08)"}`,
+              background:lang===code?"rgba(255,255,255,0.14)":"rgba(255,255,255,0.04)",
+              color:lang===code?"#f5f5f7":"#636366",
+              transition:"all 0.15s",
+            }}>{label}</button>
+          ))}
+        </div>
+
+        {/* Filter bar */}
+        <div style={{display:"flex",alignItems:"center",gap:7,padding:"0 18px 12px",
+          overflowX:"auto",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",msOverflowStyle:"none"}}>
+          {["All","TikTok","Instagram","Facebook"].map(pl=>{
+            const pp=P[pl]; const sel=filter===pl;
+            return <button key={pl} onClick={()=>setFilter(pl)} style={{
+              background:sel?(pp?`${pp.accent}18`:"rgba(255,255,255,0.15)"):"rgba(255,255,255,0.06)",
+              border:`1.5px solid ${sel?(pp?.accent+"44"||"rgba(255,255,255,0.3)"):"rgba(255,255,255,0.08)"}`,
+              borderRadius:20,padding:"6px 15px",
+              color:sel?(pp?.accent||"#f5f5f7"):"#8e8e93",
+              fontSize:12,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,
+              boxShadow:sel&&pp?`0 0 12px ${pp.glow}`:"none",
+              transition:"all 0.18s"}}>{pl==="All"?t.all:pl}</button>;
+          })}
+          <div style={{width:1,height:18,background:"rgba(255,255,255,0.1)",flexShrink:0}}/>
+          <div style={{position:"relative",flexShrink:0}}>
+            <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:12,color:"#636366",pointerEvents:"none"}}>⌕</span>
+            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder={t.search}
+              style={{background:"rgba(255,255,255,0.06)",border:"1.5px solid rgba(255,255,255,0.08)",
+                borderRadius:20,padding:"6px 12px 6px 26px",color:"#f5f5f7",fontSize:12,outline:"none",width:120,transition:"all 0.2s"}}
+              onFocus={e=>{e.target.style.border="1.5px solid rgba(255,255,255,0.25)";e.target.style.width="155px";}}
+              onBlur={e=>{e.target.style.border="1.5px solid rgba(255,255,255,0.08)";e.target.style.width="120px";}}/>
+          </div>
+          <select value={sort} onChange={e=>setSort(e.target.value)}
+            style={{background:"rgba(255,255,255,0.06)",border:"1.5px solid rgba(255,255,255,0.08)",
+              borderRadius:20,padding:"6px 11px",color:"#8e8e93",fontSize:12,outline:"none",cursor:"pointer",flexShrink:0}}>
+            <option value="latest" style={{background:"#1c1c1e"}}>{t.latest}</option>
+            <option value="rating" style={{background:"#1c1c1e"}}>{t.topRated}</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{maxWidth:1100,margin:"0 auto",padding:"18px 14px 44px",position:"relative",zIndex:1}}>
+        {loading?(
+          <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"60vh",gap:16}}>
+            <div style={{width:40,height:40,borderRadius:"50%",border:"3px solid rgba(255,255,255,0.1)",borderTop:"3px solid #8e8e93",animation:"spin 0.8s linear infinite"}}/>
+            <div style={{fontSize:13,color:"#636366"}}>{t.connecting}</div>
+          </div>
+        ):error?(
+          <div style={{textAlign:"center",padding:"60px 20px"}}>
+            <div style={{fontSize:14,color:"#ff453a",marginBottom:8}}>⚠️ Firebase Error</div>
+            <div style={{fontSize:12,color:"#636366"}}>{error}</div>
+          </div>
+        ):list.length===0?(
+          <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"65vh",padding:"40px 20px",position:"relative"}}>
+            {/* Decorative rings */}
+            <div style={{position:"relative",width:200,height:200,marginBottom:40}}>
+              {/* Outer ring */}
+              <div style={{position:"absolute",inset:0,borderRadius:"50%",border:"1px solid rgba(255,255,255,0.06)",animation:"drift 8s ease-in-out infinite"}}/>
+              {/* Mid ring */}
+              <div style={{position:"absolute",inset:16,borderRadius:"50%",border:"1px solid rgba(254,44,85,0.12)",animation:"drift 6s ease-in-out infinite reverse"}}/>
+              {/* Inner ring */}
+              <div style={{position:"absolute",inset:32,borderRadius:"50%",border:"1px solid rgba(179,58,180,0.15)",animation:"drift 10s ease-in-out infinite"}}/>
+              {/* Center glow dot */}
+              <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <div style={{position:"relative"}}>
+                  <div style={{width:80,height:80,borderRadius:"50%",
+                    background:"linear-gradient(135deg,rgba(254,44,85,0.15),rgba(24,119,242,0.15))",
+                    border:"1px solid rgba(255,255,255,0.08)",
+                    display:"flex",alignItems:"center",justifyContent:"center",
+                    backdropFilter:"blur(20px)"}}>
+                    <div style={{width:40,height:40,borderRadius:"50%",
+                      background:"linear-gradient(135deg,#FE2C55,#B33AB4)",
+                      display:"flex",alignItems:"center",justifyContent:"center",
+                      boxShadow:"0 0 30px rgba(254,44,85,0.4), 0 0 60px rgba(179,58,180,0.2)",
+                      fontSize:16,color:"#fff"}}>▶</div>
+                  </div>
+                  {/* Orbit dot TikTok */}
+                  <div style={{position:"absolute",top:-4,right:-4,width:18,height:18,borderRadius:"50%",
+                    background:"#FE2C55",boxShadow:"0 0 12px rgba(254,44,85,0.6)",
+                    display:"flex",alignItems:"center",justifyContent:"center",fontSize:7,color:"#fff",fontWeight:900}}>TK</div>
+                  {/* Orbit dot IG */}
+                  <div style={{position:"absolute",bottom:-4,left:-4,width:18,height:18,borderRadius:"50%",
+                    background:"linear-gradient(135deg,#833AB4,#E1306C)",boxShadow:"0 0 12px rgba(179,58,180,0.6)",
+                    display:"flex",alignItems:"center",justifyContent:"center",fontSize:7,color:"#fff",fontWeight:900}}>IG</div>
+                  {/* Orbit dot FB */}
+                  <div style={{position:"absolute",top:-4,left:-8,width:18,height:18,borderRadius:"50%",
+                    background:"#1877F2",boxShadow:"0 0 12px rgba(24,119,242,0.6)",
+                    display:"flex",alignItems:"center",justifyContent:"center",fontSize:7,color:"#fff",fontWeight:900}}>FB</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Text */}
+            <div style={{textAlign:"center",maxWidth:260}}>
+              <div style={{fontSize:22,fontWeight:900,color:"#f5f5f7",letterSpacing:-0.5,marginBottom:10,background:"linear-gradient(135deg,#f5f5f7,rgba(255,255,255,0.4))",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{t.vaultEmpty}</div>
+              <div style={{fontSize:13,color:"#636366",lineHeight:1.6,marginBottom:28}}>
+                {t.vaultDesc}
+              </div>
+              <button onClick={()=>setModal(true)} style={{
+                background:"linear-gradient(135deg,#FE2C55,#B33AB4)",
+                border:"none",borderRadius:14,padding:"12px 28px",
+                color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer",
+                boxShadow:"0 8px 24px rgba(254,44,85,0.35), 0 0 0 1px rgba(255,255,255,0.1) inset",
+                transition:"all 0.2s"}}
+                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 12px 32px rgba(254,44,85,0.45)";}}
+                onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow="0 8px 24px rgba(254,44,85,0.35)";}}
+              >{t.saveFirst}</button>
+            </div>
+          </div>
+        ):(
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))",gap:16}}>
+            {list.map(v=><Card key={v.key} v={v} onUpdate={updateVideo} onDelete={deleteVideo} t={t}/>)}
+          </div>
+        )}
+      </div>
+
+      {/* Watermark */}
+      <div style={{textAlign:"center",padding:"10px 16px 28px",position:"relative",zIndex:1}}>
+        <div style={{display:"inline-flex",alignItems:"center",gap:7,
+          background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",
+          borderRadius:20,padding:"6px 16px"}}>
+          <span style={{fontSize:11,color:"#636366"}}>{t.builtBy}</span>
+          <span style={{fontSize:12,fontWeight:900,background:"linear-gradient(90deg,#FE2C55,#B33AB4)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Ali</span>
+          <span style={{fontSize:11,color:"#3a3a3c"}}>·</span>
+          <span style={{fontSize:12,fontWeight:900,background:"linear-gradient(90deg,#1877F2,#B33AB4)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>TMOMO Buddy</span>
+        </div>
+      </div>
+
+      {modal&&<Modal onAdd={()=>{}} onClose={()=>setModal(false)} t={t} lang={lang}/>}
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App/>);
+</script>
+</body>
+</html>
