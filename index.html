@@ -311,8 +311,8 @@ function Card({v,onUpdate,onDelete,t,onPlay}) {
   );
 }
 
-function Modal({onAdd,onClose,t,lang}) {
-  const [f,setF] = useState({url:"",title:"",platform:"TikTok",category:"Hook",notes:"",rating:3,savedBy:"Ali"});
+function Modal({onAdd,onClose,t,lang,userName}) {
+  const [f,setF] = useState({url:"",title:"",platform:"TikTok",category:"Hook",notes:"",rating:3,savedBy:userName||"Ali"});
   const [saving,setSaving] = useState(false);
   const [thumb,setThumb]   = useState(null);
   const [fetching,setFetching] = useState(false);
@@ -474,6 +474,103 @@ function Modal({onAdd,onClose,t,lang}) {
 }
 
 
+
+function NameGate({onEnter}) {
+  const [name, setName] = useState("");
+  const submit = () => {
+    if(!name.trim()) return;
+    localStorage.setItem("tv_username", name.trim());
+    onEnter(name.trim());
+  };
+  return (
+    <div style={{position:"fixed",inset:0,zIndex:500,
+      background:"#000",display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
+      {/* Ambient */}
+      <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
+        <div style={{position:"absolute",width:400,height:400,top:"10%",left:"50%",transform:"translateX(-50%)",
+          borderRadius:"50%",background:"radial-gradient(circle,rgba(254,44,85,0.12) 0%,transparent 70%)",filter:"blur(60px)"}}/>
+        <div style={{position:"absolute",width:300,height:300,bottom:"5%",left:"10%",
+          borderRadius:"50%",background:"radial-gradient(circle,rgba(24,119,242,0.1) 0%,transparent 70%)",filter:"blur(60px)"}}/>
+      </div>
+
+      <div style={{width:"100%",maxWidth:360,position:"relative",zIndex:1,textAlign:"center"}}>
+        {/* Logo */}
+        <div style={{marginBottom:32}}>
+          <div style={{fontSize:32,fontWeight:900,letterSpacing:-1,color:"#f5f5f7",marginBottom:4}}>TrendVault</div>
+          <div style={{fontSize:10,letterSpacing:3,color:"#636366",fontWeight:600}}>VIDEO INSPIRATION</div>
+        </div>
+
+        {/* Card */}
+        <div style={{background:"rgba(28,28,30,0.9)",border:"1px solid rgba(255,255,255,0.08)",
+          borderRadius:24,padding:"28px 24px",
+          boxShadow:"0 24px 60px rgba(0,0,0,0.5)"}}>
+          <div style={{fontSize:18,fontWeight:800,color:"#f5f5f7",marginBottom:6,letterSpacing:-0.3}}>
+            Siapa kau? 👋
+          </div>
+          <div style={{fontSize:13,color:"#636366",marginBottom:24,lineHeight:1.5}}>
+            Masukkan nama kau supaya team tahu siapa save video
+          </div>
+
+          <input
+            value={name}
+            onChange={e=>setName(e.target.value)}
+            onKeyDown={e=>e.key==="Enter"&&submit()}
+            placeholder="Nama kau..."
+            autoFocus
+            style={{width:"100%",background:"rgba(255,255,255,0.06)",
+              border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,
+              padding:"13px 16px",color:"#f5f5f7",fontSize:15,outline:"none",
+              marginBottom:14,textAlign:"center",fontWeight:600,
+              transition:"border 0.15s"}}
+            onFocus={e=>e.target.style.border="1px solid rgba(254,44,85,0.5)"}
+            onBlur={e=>e.target.style.border="1px solid rgba(255,255,255,0.1)"}
+          />
+
+          <button onClick={submit} disabled={!name.trim()} style={{
+            width:"100%",background:name.trim()?"linear-gradient(135deg,#FE2C55,#B33AB4)":"rgba(255,255,255,0.06)",
+            border:"none",borderRadius:12,padding:"13px",
+            color:name.trim()?"#fff":"#636366",fontSize:14,fontWeight:800,
+            cursor:name.trim()?"pointer":"not-allowed",
+            boxShadow:name.trim()?"0 8px 20px rgba(254,44,85,0.35)":"none",
+            transition:"all 0.2s"}}>
+            Masuk →
+          </button>
+        </div>
+
+        <div style={{marginTop:16,fontSize:11,color:"#3a3a3c"}}>
+          Nama ini hanya untuk pengenalan dalam team
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Notification banner
+function NotifBanner({notif,onClose}) {
+  useEffect(()=>{
+    const t = setTimeout(onClose, 4000);
+    return ()=>clearTimeout(t);
+  },[]);
+  if(!notif) return null;
+  return (
+    <div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",
+      zIndex:400,maxWidth:320,width:"calc(100% - 32px)",
+      background:"rgba(28,28,30,0.97)",border:"1px solid rgba(255,255,255,0.12)",
+      borderRadius:16,padding:"12px 16px",
+      boxShadow:"0 8px 32px rgba(0,0,0,0.5)",
+      animation:"pop 0.3s ease",display:"flex",alignItems:"center",gap:12}}>
+      <div style={{width:36,height:36,borderRadius:10,flexShrink:0,
+        background:"linear-gradient(135deg,#FE2C55,#B33AB4)",
+        display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>🎬</div>
+      <div style={{flex:1,minWidth:0}}>
+        <div style={{fontSize:12,fontWeight:700,color:"#f5f5f7",marginBottom:2}}>{notif.savedBy} baru simpan video</div>
+        <div style={{fontSize:11,color:"#8e8e93",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{notif.title}</div>
+      </div>
+      <button onClick={onClose} style={{background:"none",border:"none",color:"#636366",cursor:"pointer",fontSize:14,padding:0,flexShrink:0}}>✕</button>
+    </div>
+  );
+}
+
 function VideoPlayer({v, onClose}) {
   const p = P[v.platform];
 
@@ -610,6 +707,9 @@ function App() {
   const [lang, setLang] = useState("ms");
   const t = LANG[lang];
   const [playingVideo, setPlayingVideo] = useState(null);
+  const [userName, setUserName] = useState(()=>localStorage.getItem("tv_username")||null);
+  const [notif, setNotif] = useState(null);
+  const [lastCount, setLastCount] = useState(0);
   const [videos,   setVideos]   = useState([]);
   const [loading,  setLoading]  = useState(true);
   const [error,    setError]    = useState(null);
@@ -626,7 +726,18 @@ function App() {
         const d = snap.val();
         if(d){
           const arr = Object.entries(d).map(([k,v])=>({...v,key:k}));
-          setVideos(arr.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)));
+          const sorted = arr.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+        setVideos(prev => {
+          // Notif if someone else saved a new video
+          if(prev.length > 0 && sorted.length > prev.length) {
+            const newest = sorted[0];
+            const myName = localStorage.getItem("tv_username");
+            if(newest.savedBy !== myName) {
+              setNotif(newest);
+            }
+          }
+          return sorted;
+        });
         } else { setVideos([]); }
         setLoading(false);
       } catch(e){ setError(e.message); setLoading(false); }
@@ -651,6 +762,8 @@ function App() {
 
   return (
     <div style={{minHeight:"100vh",background:"#000",color:"#f5f5f7",position:"relative"}}>
+      {!userName && <NameGate onEnter={n=>{setUserName(n);localStorage.setItem("tv_username",n);}}/>}
+      <NotifBanner notif={notif} onClose={()=>setNotif(null)}/>
 
       {/* Ambient blobs */}
       <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",overflow:"hidden"}}>
@@ -714,6 +827,25 @@ function App() {
             }}>{label}</button>
           ))}
         </div>
+
+        {/* User chip */}
+        {userName && (
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 18px 8px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <div style={{width:26,height:26,borderRadius:"50%",
+                background:"linear-gradient(135deg,#FE2C55,#B33AB4)",
+                display:"flex",alignItems:"center",justifyContent:"center",
+                fontSize:11,fontWeight:800,color:"#fff",flexShrink:0}}>
+                {userName.charAt(0).toUpperCase()}
+              </div>
+              <span style={{fontSize:12,color:"#8e8e93",fontWeight:600}}>{userName}</span>
+            </div>
+            <button onClick={()=>{localStorage.removeItem("tv_username");setUserName(null);}}
+              style={{background:"none",border:"none",cursor:"pointer",fontSize:11,color:"#3a3a3c",padding:0}}>
+              Tukar nama
+            </button>
+          </div>
+        )}
 
         {/* Filter bar */}
         <div style={{display:"flex",alignItems:"center",gap:7,padding:"0 18px 12px",
@@ -836,7 +968,7 @@ function App() {
       </div>
 
       {playingVideo&&<VideoPlayer v={playingVideo} onClose={()=>setPlayingVideo(null)}/>}
-      {modal&&<Modal onAdd={()=>{}} onClose={()=>setModal(false)} t={t} lang={lang}/>}
+      {modal&&<Modal onAdd={()=>{}} onClose={()=>setModal(false)} t={t} lang={lang} userName={userName}/>}
     </div>
   );
 }
