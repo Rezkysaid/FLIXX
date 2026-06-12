@@ -12,9 +12,9 @@
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html,body,#root{height:100%}
-    body{background:#000;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;color:#f5f5f7}
+    body{background:#F5EFE6;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;color:#f5f5f7}
     input,select,textarea,button{font-family:inherit}
-    input::placeholder,textarea::placeholder{color:#636366}
+    input::placeholder,textarea::placeholder{color:#B8916F}
     ::-webkit-scrollbar{width:0;height:0}
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
     @keyframes pop{0%{opacity:0;transform:scale(0.9)}100%{opacity:1;transform:scale(1)}}
@@ -159,8 +159,8 @@ const P = {
 };
 const STATUS = {
   Saved:       {color:"#8E8E93",dot:"#8E8E93",bg:"rgba(255,255,255,0.06)"},
-  "In Progress":{color:"#FF9F0A",dot:"#FF9F0A",bg:"rgba(255,159,10,0.12)"},
-  Used:        {color:"#30D158",dot:"#30D158",bg:"rgba(48,209,88,0.12)"},
+  "In Progress":{color:"#C47B2B",dot:"#C47B2B",bg:"rgba(196,123,43,0.12)"},
+  Used:        {color:"#4A7C59",dot:"#4A7C59",bg:"rgba(74,124,89,0.12)"},
 };
 const STATUSES   = ["Saved","In Progress","Used"];
 const CATEGORIES = ["Hook","Transition","Product Demo","Storytelling","Trending Audio","CTA","Lain-lain"];
@@ -175,7 +175,7 @@ function Stars({val,onChange}) {
           onMouseLeave={()=>onChange&&setH(0)}
           onClick={()=>onChange&&onChange(s)}
           style={{fontSize:15,cursor:onChange?"pointer":"default",
-            color:s<=(h||val)?"#FF9F0A":"rgba(255,255,255,0.15)",
+            color:s<=(h||val)?"#C47B2B":"rgba(44,26,14,0.12)",
             display:"inline-block",transition:"all 0.1s",
             transform:s<=(h||val)?"scale(1.2)":"scale(1)"}}>★</span>
       ))}
@@ -212,34 +212,34 @@ function Card({v,onUpdate,onDelete,t,onPlay}) {
   return (
     <div ref={cardRef} className="card" onMouseMove={tilt} onMouseLeave={resetTilt}
       style={{transition:"transform 0.15s ease",borderRadius:20,overflow:"hidden",
-        background:"rgba(28,28,30,0.9)",
-        border:"1px solid rgba(255,255,255,0.08)",
-        boxShadow:"0 4px 24px rgba(0,0,0,0.5)"}}>
+        background:"rgba(240,225,205,0.85)",
+        border:"1px solid rgba(44,26,14,0.1)",
+        boxShadow:"0 4px 24px rgba(44,26,14,0.2)"}}>
 
       {/* Thumbnail */}
       <div onClick={()=>onPlay(v)}
         style={{height:155,cursor:"pointer",position:"relative",overflow:"hidden",
-          background:`linear-gradient(135deg,#1c1c1e,${p.accent}22)`}}>
+          background:`linear-gradient(135deg,#D4B896,${p.accent}22)`}}>
         {v.thumbnail && (
           <img src={v.thumbnail} alt="thumb"
             style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.85}}
             onError={e=>e.target.style.display="none"}/>
         )}
-        <div style={{position:"absolute",inset:0,background:v.thumbnail?"rgba(0,0,0,0.35)":`radial-gradient(ellipse at 75% 25%,${p.accent}20,transparent 60%)`}}/>
+        <div style={{position:"absolute",inset:0,background:v.thumbnail?"rgba(44,26,14,0.12)":`radial-gradient(ellipse at 75% 25%,${p.accent}20,transparent 60%)`}}/>
         <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
           <div style={{width:50,height:50,borderRadius:"50%",
-            background:"rgba(255,255,255,0.08)",border:"1.5px solid rgba(255,255,255,0.2)",
+            background:"rgba(44,26,14,0.08)",border:"1.5px solid rgba(255,255,255,0.2)",
             display:"flex",alignItems:"center",justifyContent:"center",
             fontSize:18,color:"rgba(255,255,255,0.8)",transition:"all 0.2s"}}
-            onMouseEnter={e=>{e.currentTarget.style.background="rgba(255,255,255,0.15)";e.currentTarget.style.transform="scale(1.1)";}}
-            onMouseLeave={e=>{e.currentTarget.style.background="rgba(255,255,255,0.08)";e.currentTarget.style.transform="";}}>▶</div>
+            onMouseEnter={e=>{e.currentTarget.style.background="rgba(44,26,14,0.12)";e.currentTarget.style.transform="scale(1.1)";}}
+            onMouseLeave={e=>{e.currentTarget.style.background="rgba(44,26,14,0.1)";e.currentTarget.style.transform="";}}>▶</div>
         </div>
         <div style={{position:"absolute",top:10,left:10,right:10,display:"flex",justifyContent:"space-between"}}>
           <span style={{background:`${p.accent}22`,border:`1px solid ${p.accent}55`,
             borderRadius:6,padding:"3px 8px",fontSize:9,fontWeight:800,letterSpacing:1.2,color:p.accent}}>
             {v.platform?.toUpperCase()}
           </span>
-          <span style={{background:"rgba(0,0,0,0.5)",border:"1px solid rgba(255,255,255,0.1)",
+          <span style={{background:"rgba(44,26,14,0.2)",border:"1px solid rgba(44,26,14,0.12)",
             borderRadius:6,padding:"3px 8px",fontSize:9,color:"rgba(255,255,255,0.7)"}}>
             {v.category}
           </span>
@@ -250,7 +250,7 @@ function Card({v,onUpdate,onDelete,t,onPlay}) {
 
       {/* Body */}
       <div style={{padding:"14px 16px 16px"}}>
-        <div style={{fontSize:14,fontWeight:700,color:"#f5f5f7",lineHeight:1.45,marginBottom:10,letterSpacing:-0.2}}>
+        <div style={{fontSize:14,fontWeight:700,color:"#2C1A0E",lineHeight:1.45,marginBottom:10,letterSpacing:-0.2}}>
           {v.title}
         </div>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
@@ -265,41 +265,41 @@ function Card({v,onUpdate,onDelete,t,onPlay}) {
         </div>
 
         {v.notes && (
-          <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",
+          <div style={{background:"rgba(44,26,14,0.04)",border:"1px solid rgba(255,255,255,0.07)",
             borderLeft:`2px solid ${p.accent}66`,borderRadius:8,padding:"8px 10px",
-            fontSize:12,color:"#aeaeb2",lineHeight:1.5,marginBottom:10}}>{v.notes}</div>
+            fontSize:12,color:"#6B4226",lineHeight:1.5,marginBottom:10}}>{v.notes}</div>
         )}
 
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <span style={{fontSize:11,color:"#636366"}}>
-            <strong style={{color:"#8e8e93"}}>{v.savedBy}</strong> · {v.savedAt}
+          <span style={{fontSize:11,color:"#B8916F"}}>
+            <strong style={{color:"#A0714F"}}>{v.savedBy}</strong> · {v.savedAt}
           </span>
           <div style={{display:"flex",gap:12}}>
             <button onClick={()=>setShowC(!showC)}
               style={{background:"none",border:"none",cursor:"pointer",padding:0,
-                fontSize:12,color:showC?p.accent:"#636366",transition:"color 0.15s"}}>
+                fontSize:12,color:showC?p.accent:"#B8916F",transition:"color 0.15s"}}>
               💬 {(v.comments||[]).length}
             </button>
             <button onClick={()=>onDelete(v.key)}
               style={{background:"none",border:"none",cursor:"pointer",padding:0,
-                fontSize:12,color:"#636366",transition:"color 0.15s"}}
+                fontSize:12,color:"#B8916F",transition:"color 0.15s"}}
               onMouseEnter={e=>e.currentTarget.style.color="#ff453a"}
-              onMouseLeave={e=>e.currentTarget.style.color="#636366"}>✕</button>
+              onMouseLeave={e=>e.currentTarget.style.color="#B8916F"}>✕</button>
           </div>
         </div>
 
         {showC && (
           <div style={{marginTop:10}}>
             {(v.comments||[]).map((c,i)=>(
-              <div key={i} style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",
-                borderRadius:8,padding:"6px 10px",fontSize:12,color:"#aeaeb2",marginBottom:4}}>{c}</div>
+              <div key={i} style={{background:"rgba(44,26,14,0.04)",border:"1px solid rgba(255,255,255,0.07)",
+                borderRadius:8,padding:"6px 10px",fontSize:12,color:"#6B4226",marginBottom:4}}>{c}</div>
             ))}
             <div style={{display:"flex",gap:6,marginTop:6}}>
               <input value={txt} onChange={e=>setTxt(e.target.value)}
                 onKeyDown={e=>e.key==="Enter"&&postComment()}
                 placeholder={t.comment}
-                style={{flex:1,background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",
-                  borderRadius:8,padding:"7px 10px",color:"#f5f5f7",fontSize:12,outline:"none"}}/>
+                style={{flex:1,background:"rgba(44,26,14,0.06)",border:"1px solid rgba(44,26,14,0.12)",
+                  borderRadius:8,padding:"7px 10px",color:"#2C1A0E",fontSize:12,outline:"none"}}/>
               <button onClick={postComment}
                 style={{background:p.grad,border:"none",borderRadius:8,padding:"7px 13px",
                   color:"#fff",fontSize:12,fontWeight:800,cursor:"pointer"}}>↑</button>
@@ -356,48 +356,48 @@ function Modal({onAdd,onClose,t,lang,userName}) {
   };
 
   const inp = {
-    width:"100%",background:"rgba(255,255,255,0.06)",
-    border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,
-    padding:"10px 12px",color:"#f5f5f7",fontSize:13,outline:"none"
+    width:"100%",background:"rgba(44,26,14,0.06)",
+    border:"1px solid rgba(44,26,14,0.12)",borderRadius:10,
+    padding:"10px 12px",color:"#2C1A0E",fontSize:13,outline:"none"
   };
 
   return (
     <div style={{position:"fixed",inset:0,zIndex:200,
-      background:"rgba(0,0,0,0.7)",backdropFilter:"blur(12px)",
+      background:"rgba(44,26,14,0.55)",backdropFilter:"blur(12px)",
       display:"flex",alignItems:"flex-end",justifyContent:"center"}}
       onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div style={{width:"100%",maxWidth:520,
-        background:"#1c1c1e",borderRadius:"22px 22px 0 0",
+        background:"#E8D5BC",borderRadius:"22px 22px 0 0",
         borderTop:"1px solid rgba(255,255,255,0.1)",
         padding:"0 22px 40px",maxHeight:"92vh",overflowY:"auto",
         animation:"slideUp 0.3s cubic-bezier(0.32,0.72,0,1)"}}>
 
         <div style={{display:"flex",justifyContent:"center",padding:"14px 0 10px"}}>
-          <div style={{width:36,height:4,borderRadius:2,background:"rgba(255,255,255,0.2)"}}/>
+          <div style={{width:36,height:4,borderRadius:2,background:"rgba(44,26,14,0.2)"}}/>
         </div>
 
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
           <div>
-            <div style={{fontSize:20,fontWeight:900,color:"#f5f5f7",letterSpacing:-0.5}}>{t.saveVideo}</div>
-            <div style={{fontSize:11,color:"#636366",marginTop:2}}>{t.saveSubtitle}</div>
+            <div style={{fontSize:20,fontWeight:900,color:"#2C1A0E",letterSpacing:-0.5}}>{t.saveVideo}</div>
+            <div style={{fontSize:11,color:"#B8916F",marginTop:2}}>{t.saveSubtitle}</div>
           </div>
           <button onClick={onClose} style={{width:30,height:30,borderRadius:"50%",
-            background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.1)",
-            color:"#aeaeb2",cursor:"pointer",fontSize:14,
+            background:"rgba(44,26,14,0.08)",border:"1px solid rgba(44,26,14,0.12)",
+            color:"#6B4226",cursor:"pointer",fontSize:14,
             display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
         </div>
 
         {/* Platform */}
         <div style={{marginBottom:16}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#636366",letterSpacing:1.8,marginBottom:8}}>PLATFORM</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#B8916F",letterSpacing:1.8,marginBottom:8}}>PLATFORM</div>
           <div style={{display:"flex",gap:8}}>
             {["TikTok","Instagram","Facebook"].map(pl=>{
               const pp=P[pl]; const sel=f.platform===pl;
               return <button key={pl} onClick={()=>set("platform",pl)} style={{
                 flex:1,padding:"10px 0",cursor:"pointer",
                 background:sel?`${pp.accent}15`:"rgba(255,255,255,0.05)",
-                border:`1.5px solid ${sel?pp.accent+"55":"rgba(255,255,255,0.08)"}`,
-                borderRadius:12,color:sel?pp.accent:"#636366",
+                border:`1.5px solid ${sel?pp.accent+"55":"rgba(44,26,14,0.1)"}`,
+                borderRadius:12,color:sel?pp.accent:"#B8916F",
                 fontSize:12,fontWeight:800,
                 boxShadow:sel?`0 0 16px ${pp.glow}`:"none",
                 transition:"all 0.2s"}}>{pl}</button>;
@@ -408,7 +408,7 @@ function Modal({onAdd,onClose,t,lang,userName}) {
         {/* Thumbnail preview */}
         {(thumb||fetching) && (
           <div style={{marginBottom:16,borderRadius:12,overflow:"hidden",position:"relative",
-            height:140,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)"}}>
+            height:140,background:"rgba(44,26,14,0.04)",border:"1px solid rgba(44,26,14,0.1)"}}>
             {fetching && !thumb && (
               <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
                 <div style={{width:24,height:24,borderRadius:"50%",border:"2px solid rgba(255,255,255,0.1)",borderTop:"2px solid #8e8e93",animation:"spin 0.8s linear infinite"}}/>
@@ -420,7 +420,7 @@ function Modal({onAdd,onClose,t,lang,userName}) {
                 onError={()=>setThumb(null)}/>
             )}
             <div style={{position:"absolute",top:8,right:8,
-              background:"rgba(0,0,0,0.6)",borderRadius:6,padding:"2px 8px",
+              background:"rgba(44,26,14,0.55)",borderRadius:6,padding:"2px 8px",
               fontSize:10,color:"rgba(255,255,255,0.7)"}}>AUTO</div>
           </div>
         )}
@@ -432,7 +432,7 @@ function Modal({onAdd,onClose,t,lang,userName}) {
           {label:t.notesLabel,key:"notes",ph:t.notesPh,ta:true},
         ].map(({label,key,ph,ta})=>(
           <div key={key} style={{marginBottom:14}}>
-            <div style={{fontSize:10,fontWeight:700,color:"#636366",letterSpacing:1.8,marginBottom:6}}>{label}</div>
+            <div style={{fontSize:10,fontWeight:700,color:"#B8916F",letterSpacing:1.8,marginBottom:6}}>{label}</div>
             {ta
               ? <textarea value={f[key]} onChange={e=>set(key,e.target.value)} placeholder={ph} rows={2}
                   style={{...inp,resize:"none"}}
@@ -448,21 +448,21 @@ function Modal({onAdd,onClose,t,lang,userName}) {
 
         <div style={{display:"flex",gap:12,marginBottom:22,alignItems:"flex-end"}}>
           <div style={{flex:1}}>
-            <div style={{fontSize:10,fontWeight:700,color:"#636366",letterSpacing:1.8,marginBottom:6}}>{t.catLabel}</div>
+            <div style={{fontSize:10,fontWeight:700,color:"#B8916F",letterSpacing:1.8,marginBottom:6}}>{t.catLabel}</div>
             <select value={f.category} onChange={e=>set("category",e.target.value)} style={{...inp,cursor:"pointer"}}>
-              {(t.cats||CATEGORIES).map(c=><option key={c} style={{background:"#1c1c1e"}}>{c}</option>)}
+              {(t.cats||CATEGORIES).map(c=><option key={c} style={{background:"#E8D5BC"}}>{c}</option>)}
             </select>
           </div>
           <div style={{paddingBottom:8}}>
-            <div style={{fontSize:10,fontWeight:700,color:"#636366",letterSpacing:1.8,marginBottom:8}}>{t.ratingLabel}</div>
+            <div style={{fontSize:10,fontWeight:700,color:"#B8916F",letterSpacing:1.8,marginBottom:8}}>{t.ratingLabel}</div>
             <Stars val={f.rating} onChange={r=>set("rating",r)}/>
           </div>
         </div>
 
         <button onClick={submit} disabled={saving} style={{
-          width:"100%",background:saving?"rgba(255,255,255,0.1)":p.grad,
+          width:"100%",background:saving?"rgba(44,26,14,0.12)":p.grad,
           border:"none",borderRadius:14,padding:"14px",
-          color:saving?"#636366":"#fff",fontSize:14,fontWeight:800,
+          color:saving?"#B8916F":"#fff",fontSize:14,fontWeight:800,
           cursor:saving?"not-allowed":"pointer",
           boxShadow:saving?"none":`0 8px 20px ${p.glow}`,
           transition:"all 0.15s"}}>
@@ -484,30 +484,30 @@ function NameGate({onEnter}) {
   };
   return (
     <div style={{position:"fixed",inset:0,zIndex:500,
-      background:"#000",display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
+      background:"#F5EFE6",display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
       {/* Ambient */}
       <div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>
         <div style={{position:"absolute",width:400,height:400,top:"10%",left:"50%",transform:"translateX(-50%)",
-          borderRadius:"50%",background:"radial-gradient(circle,rgba(254,44,85,0.12) 0%,transparent 70%)",filter:"blur(60px)"}}/>
+          borderRadius:"50%",background:"radial-gradient(circle,rgba(139,69,19,0.15) 0%,transparent 70%)",filter:"blur(60px)"}}/>
         <div style={{position:"absolute",width:300,height:300,bottom:"5%",left:"10%",
-          borderRadius:"50%",background:"radial-gradient(circle,rgba(24,119,242,0.1) 0%,transparent 70%)",filter:"blur(60px)"}}/>
+          borderRadius:"50%",background:"radial-gradient(circle,rgba(160,113,79,0.15) 0%,transparent 70%)",filter:"blur(60px)"}}/>
       </div>
 
       <div style={{width:"100%",maxWidth:360,position:"relative",zIndex:1,textAlign:"center"}}>
         {/* Logo */}
         <div style={{marginBottom:32}}>
-          <div style={{fontSize:32,fontWeight:900,letterSpacing:-1,color:"#f5f5f7",marginBottom:4}}>TrendVault</div>
-          <div style={{fontSize:10,letterSpacing:3,color:"#636366",fontWeight:600}}>VIDEO INSPIRATION</div>
+          <div style={{fontSize:32,fontWeight:900,letterSpacing:-1,color:"#2C1A0E",marginBottom:4}}>TrendVault</div>
+          <div style={{fontSize:10,letterSpacing:3,color:"#B8916F",fontWeight:600}}>VIDEO INSPIRATION</div>
         </div>
 
         {/* Card */}
-        <div style={{background:"rgba(28,28,30,0.9)",border:"1px solid rgba(255,255,255,0.08)",
+        <div style={{background:"rgba(240,225,205,0.85)",border:"1px solid rgba(44,26,14,0.1)",
           borderRadius:24,padding:"28px 24px",
-          boxShadow:"0 24px 60px rgba(0,0,0,0.5)"}}>
-          <div style={{fontSize:18,fontWeight:800,color:"#f5f5f7",marginBottom:6,letterSpacing:-0.3}}>
+          boxShadow:"0 24px 60px rgba(44,26,14,0.2)"}}>
+          <div style={{fontSize:18,fontWeight:800,color:"#2C1A0E",marginBottom:6,letterSpacing:-0.3}}>
             Siapa kau? 👋
           </div>
-          <div style={{fontSize:13,color:"#636366",marginBottom:24,lineHeight:1.5}}>
+          <div style={{fontSize:13,color:"#B8916F",marginBottom:24,lineHeight:1.5}}>
             Masukkan nama kau supaya team tahu siapa save video
           </div>
 
@@ -517,9 +517,9 @@ function NameGate({onEnter}) {
             onKeyDown={e=>e.key==="Enter"&&submit()}
             placeholder="Nama kau..."
             autoFocus
-            style={{width:"100%",background:"rgba(255,255,255,0.06)",
-              border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,
-              padding:"13px 16px",color:"#f5f5f7",fontSize:15,outline:"none",
+            style={{width:"100%",background:"rgba(44,26,14,0.06)",
+              border:"1px solid rgba(44,26,14,0.12)",borderRadius:12,
+              padding:"13px 16px",color:"#2C1A0E",fontSize:15,outline:"none",
               marginBottom:14,textAlign:"center",fontWeight:600,
               transition:"border 0.15s"}}
             onFocus={e=>e.target.style.border="1px solid rgba(254,44,85,0.5)"}
@@ -529,7 +529,7 @@ function NameGate({onEnter}) {
           <button onClick={submit} disabled={!name.trim()} style={{
             width:"100%",background:name.trim()?"linear-gradient(135deg,#FE2C55,#B33AB4)":"rgba(255,255,255,0.06)",
             border:"none",borderRadius:12,padding:"13px",
-            color:name.trim()?"#fff":"#636366",fontSize:14,fontWeight:800,
+            color:name.trim()?"#fff":"#B8916F",fontSize:14,fontWeight:800,
             cursor:name.trim()?"pointer":"not-allowed",
             boxShadow:name.trim()?"0 8px 20px rgba(254,44,85,0.35)":"none",
             transition:"all 0.2s"}}>
@@ -537,7 +537,7 @@ function NameGate({onEnter}) {
           </button>
         </div>
 
-        <div style={{marginTop:16,fontSize:11,color:"#3a3a3c"}}>
+        <div style={{marginTop:16,fontSize:11,color:"#C4A882"}}>
           Nama ini hanya untuk pengenalan dalam team
         </div>
       </div>
@@ -555,18 +555,18 @@ function NotifBanner({notif,onClose}) {
   return (
     <div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",
       zIndex:400,maxWidth:320,width:"calc(100% - 32px)",
-      background:"rgba(28,28,30,0.97)",border:"1px solid rgba(255,255,255,0.12)",
+      background:"rgba(237,224,208,0.97)",border:"1px solid rgba(44,26,14,0.14)",
       borderRadius:16,padding:"12px 16px",
-      boxShadow:"0 8px 32px rgba(0,0,0,0.5)",
+      boxShadow:"0 8px 32px rgba(44,26,14,0.2)",
       animation:"pop 0.3s ease",display:"flex",alignItems:"center",gap:12}}>
       <div style={{width:36,height:36,borderRadius:10,flexShrink:0,
         background:"linear-gradient(135deg,#FE2C55,#B33AB4)",
         display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>🎬</div>
       <div style={{flex:1,minWidth:0}}>
-        <div style={{fontSize:12,fontWeight:700,color:"#f5f5f7",marginBottom:2}}>{notif.savedBy} baru simpan video</div>
-        <div style={{fontSize:11,color:"#8e8e93",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{notif.title}</div>
+        <div style={{fontSize:12,fontWeight:700,color:"#2C1A0E",marginBottom:2}}>{notif.savedBy} baru simpan video</div>
+        <div style={{fontSize:11,color:"#A0714F",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{notif.title}</div>
       </div>
-      <button onClick={onClose} style={{background:"none",border:"none",color:"#636366",cursor:"pointer",fontSize:14,padding:0,flexShrink:0}}>✕</button>
+      <button onClick={onClose} style={{background:"none",border:"none",color:"#B8916F",cursor:"pointer",fontSize:14,padding:0,flexShrink:0}}>✕</button>
     </div>
   );
 }
@@ -625,7 +625,7 @@ function VideoPlayer({v, onClose}) {
       <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
         height:"100%",gap:16,padding:24}}>
         <div style={{fontSize:48,opacity:0.3}}>▶</div>
-        <div style={{fontSize:13,color:"#8e8e93",textAlign:"center",lineHeight:1.6}}>
+        <div style={{fontSize:13,color:"#A0714F",textAlign:"center",lineHeight:1.6}}>
           Preview tidak tersedia untuk link ini.<br/>Tekan butang di bawah untuk tonton.
         </div>
         <button onClick={()=>window.open(v.url,"_blank")} style={{
@@ -640,7 +640,7 @@ function VideoPlayer({v, onClose}) {
 
   return (
     <div style={{position:"fixed",inset:0,zIndex:300,
-      background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",
+      background:"rgba(44,26,14,0.88)",backdropFilter:"blur(20px)",
       display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
       padding:16}}
       onClick={e=>e.target===e.currentTarget&&onClose()}>
@@ -649,31 +649,31 @@ function VideoPlayer({v, onClose}) {
       <div style={{width:"100%",maxWidth:520,display:"flex",alignItems:"center",
         justifyContent:"space-between",marginBottom:12,padding:"0 4px"}}>
         <div style={{flex:1,minWidth:0}}>
-          <div style={{fontSize:14,fontWeight:700,color:"#f5f5f7",
+          <div style={{fontSize:14,fontWeight:700,color:"#2C1A0E",
             whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{v.title}</div>
           <div style={{display:"flex",alignItems:"center",gap:6,marginTop:3}}>
             <span style={{background:`${p.accent}22`,border:`1px solid ${p.accent}44`,
               borderRadius:5,padding:"2px 7px",fontSize:9,fontWeight:800,
               letterSpacing:1,color:p.accent}}>{v.platform?.toUpperCase()}</span>
-            <span style={{fontSize:11,color:"#636366"}}>{v.category}</span>
+            <span style={{fontSize:11,color:"#B8916F"}}>{v.category}</span>
           </div>
         </div>
         <button onClick={onClose} style={{
           width:34,height:34,borderRadius:"50%",flexShrink:0,marginLeft:12,
-          background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.12)",
-          color:"#aeaeb2",cursor:"pointer",fontSize:16,
+          background:"rgba(44,26,14,0.08)",border:"1px solid rgba(44,26,14,0.14)",
+          color:"#6B4226",cursor:"pointer",fontSize:16,
           display:"flex",alignItems:"center",justifyContent:"center",
           transition:"all 0.15s"}}
           onMouseEnter={e=>{e.currentTarget.style.background="rgba(255,69,58,0.2)";e.currentTarget.style.color="#ff453a";}}
-          onMouseLeave={e=>{e.currentTarget.style.background="rgba(255,255,255,0.08)";e.currentTarget.style.color="#aeaeb2";}}>✕</button>
+          onMouseLeave={e=>{e.currentTarget.style.background="rgba(44,26,14,0.1)";e.currentTarget.style.color="#6B4226";}}>✕</button>
       </div>
 
       {/* Player */}
       <div style={{width:"100%",maxWidth:520,
         borderRadius:20,overflow:"hidden",
-        background:"#1c1c1e",
-        border:"1px solid rgba(255,255,255,0.08)",
-        boxShadow:`0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05)`,
+        background:"#E8D5BC",
+        border:"1px solid rgba(44,26,14,0.1)",
+        boxShadow:`0 24px 60px rgba(44,26,14,0.5), 0 0 0 1px rgba(255,255,255,0.05)`,
         aspectRatio:"9/16",maxHeight:"65vh",position:"relative"}}>
         {getEmbed()}
       </div>
@@ -681,20 +681,20 @@ function VideoPlayer({v, onClose}) {
       {/* Footer actions */}
       <div style={{width:"100%",maxWidth:520,display:"flex",gap:10,marginTop:12}}>
         <button onClick={()=>window.open(v.url,"_blank")} style={{
-          flex:1,background:"rgba(255,255,255,0.07)",
-          border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,
-          padding:"11px",color:"#aeaeb2",fontSize:13,fontWeight:600,
+          flex:1,background:"rgba(44,26,14,0.07)",
+          border:"1px solid rgba(44,26,14,0.12)",borderRadius:12,
+          padding:"11px",color:"#6B4226",fontSize:13,fontWeight:600,
           cursor:"pointer",transition:"all 0.15s"}}
-          onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.12)"}
+          onMouseEnter={e=>e.currentTarget.style.background="rgba(44,26,14,0.15)"}
           onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.07)"}>
           🔗 Buka Asal
         </button>
         <button onClick={()=>{navigator.clipboard?.writeText(v.url);}} style={{
-          flex:1,background:"rgba(255,255,255,0.07)",
-          border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,
-          padding:"11px",color:"#aeaeb2",fontSize:13,fontWeight:600,
+          flex:1,background:"rgba(44,26,14,0.07)",
+          border:"1px solid rgba(44,26,14,0.12)",borderRadius:12,
+          padding:"11px",color:"#6B4226",fontSize:13,fontWeight:600,
           cursor:"pointer",transition:"all 0.15s"}}
-          onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.12)"}
+          onMouseEnter={e=>e.currentTarget.style.background="rgba(44,26,14,0.15)"}
           onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.07)"}>
           📋 Copy Link
         </button>
@@ -761,7 +761,7 @@ function App() {
   };
 
   return (
-    <div style={{minHeight:"100vh",background:"#000",color:"#f5f5f7",position:"relative"}}>
+    <div style={{minHeight:"100vh",background:"#F5EFE6",color:"#2C1A0E",position:"relative"}}>
       {!userName && <NameGate onEnter={n=>{setUserName(n);localStorage.setItem("tv_username",n);}}/>}
       <NotifBanner notif={notif} onClose={()=>setNotif(null)}/>
 
@@ -781,26 +781,26 @@ function App() {
       {/* Toast */}
       {toast&&(
         <div style={{position:"fixed",top:20,left:"50%",transform:"translateX(-50%)",
-          zIndex:300,background:"rgba(28,28,30,0.95)",backdropFilter:"blur(20px)",
-          border:"1px solid rgba(255,255,255,0.12)",borderRadius:20,
-          padding:"8px 20px",fontSize:13,fontWeight:600,color:"#f5f5f7",
-          animation:"pop 0.2s ease",boxShadow:"0 8px 32px rgba(0,0,0,0.5)",
+          zIndex:300,background:"rgba(237,224,208,0.95)",backdropFilter:"blur(20px)",
+          border:"1px solid rgba(44,26,14,0.14)",borderRadius:20,
+          padding:"8px 20px",fontSize:13,fontWeight:600,color:"#2C1A0E",
+          animation:"pop 0.2s ease",boxShadow:"0 8px 32px rgba(44,26,14,0.2)",
           whiteSpace:"nowrap",zIndex:999}}>{toast}</div>
       )}
 
       {/* Header */}
       <div style={{position:"sticky",top:0,zIndex:100,
-        background:"rgba(0,0,0,0.85)",backdropFilter:"blur(30px)",
-        borderBottom:"1px solid rgba(255,255,255,0.08)"}}>
+        background:"rgba(240,230,215,0.92)",backdropFilter:"blur(30px)",
+        borderBottom:"1px solid rgba(44,26,14,0.1)"}}>
 
         <div style={{padding:"13px 18px 10px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:10}}>
           <div>
-            <div style={{fontSize:20,fontWeight:900,letterSpacing:-0.8,color:"#f5f5f7"}}>TrendVault</div>
-            <div style={{fontSize:8.5,letterSpacing:2.8,color:"#636366",fontWeight:600,marginTop:1}}>{t.appSub}</div>
+            <div style={{fontSize:20,fontWeight:900,letterSpacing:-0.8,color:"#2C1A0E"}}>TrendVault</div>
+            <div style={{fontSize:8.5,letterSpacing:2.8,color:"#B8916F",fontWeight:600,marginTop:1}}>{t.appSub}</div>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:7,flexShrink:0}}>
-            {[{v:stats.total,c:"#8e8e93"},{v:stats.prog,c:"#FF9F0A"},{v:stats.used,c:"#30D158"}].map((s,i)=>(
-              <div key={i} style={{background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.1)",
+            {[{v:stats.total,c:"#A0714F"},{v:stats.prog,c:"#C47B2B"},{v:stats.used,c:"#4A7C59"}].map((s,i)=>(
+              <div key={i} style={{background:"rgba(44,26,14,0.07)",border:"1px solid rgba(44,26,14,0.12)",
                 borderRadius:20,padding:"4px 12px",fontSize:14,fontWeight:800,color:s.c}}>{s.v}</div>
             ))}
             <button onClick={()=>setModal(true)} style={{
@@ -820,9 +820,9 @@ function App() {
           {Object.entries(LANG_LABELS).map(([code,label])=>(
             <button key={code} onClick={()=>setLang(code)} style={{
               padding:"4px 13px",borderRadius:20,fontSize:11,fontWeight:700,cursor:"pointer",
-              border:`1px solid ${lang===code?"rgba(255,255,255,0.3)":"rgba(255,255,255,0.08)"}`,
-              background:lang===code?"rgba(255,255,255,0.14)":"rgba(255,255,255,0.04)",
-              color:lang===code?"#f5f5f7":"#636366",
+              border:`1px solid ${lang===code?"rgba(255,255,255,0.3)":"rgba(44,26,14,0.1)"}`,
+              background:lang===code?"rgba(44,26,14,0.14)":"rgba(44,26,14,0.04)",
+              color:lang===code?"#2C1A0E":"#B8916F",
               transition:"all 0.15s",
             }}>{label}</button>
           ))}
@@ -838,10 +838,10 @@ function App() {
                 fontSize:11,fontWeight:800,color:"#fff",flexShrink:0}}>
                 {userName.charAt(0).toUpperCase()}
               </div>
-              <span style={{fontSize:12,color:"#8e8e93",fontWeight:600}}>{userName}</span>
+              <span style={{fontSize:12,color:"#A0714F",fontWeight:600}}>{userName}</span>
             </div>
             <button onClick={()=>{localStorage.removeItem("tv_username");setUserName(null);}}
-              style={{background:"none",border:"none",cursor:"pointer",fontSize:11,color:"#3a3a3c",padding:0}}>
+              style={{background:"none",border:"none",cursor:"pointer",fontSize:11,color:"#C4A882",padding:0}}>
               Tukar nama
             </button>
           </div>
@@ -853,28 +853,28 @@ function App() {
           {["All","TikTok","Instagram","Facebook"].map(pl=>{
             const pp=P[pl]; const sel=filter===pl;
             return <button key={pl} onClick={()=>setFilter(pl)} style={{
-              background:sel?(pp?`${pp.accent}18`:"rgba(255,255,255,0.15)"):"rgba(255,255,255,0.06)",
-              border:`1.5px solid ${sel?(pp?.accent+"44"||"rgba(255,255,255,0.3)"):"rgba(255,255,255,0.08)"}`,
+              background:sel?(pp?`${pp.accent}18`:"rgba(44,26,14,0.12)"):"rgba(255,255,255,0.06)",
+              border:`1.5px solid ${sel?(pp?.accent+"44"||"rgba(255,255,255,0.3)"):"rgba(44,26,14,0.1)"}`,
               borderRadius:20,padding:"6px 15px",
-              color:sel?(pp?.accent||"#f5f5f7"):"#8e8e93",
+              color:sel?(pp?.accent||"#2C1A0E"):"#A0714F",
               fontSize:12,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,
               boxShadow:sel&&pp?`0 0 12px ${pp.glow}`:"none",
               transition:"all 0.18s"}}>{pl==="All"?t.all:pl}</button>;
           })}
-          <div style={{width:1,height:18,background:"rgba(255,255,255,0.1)",flexShrink:0}}/>
+          <div style={{width:1,height:18,background:"rgba(44,26,14,0.12)",flexShrink:0}}/>
           <div style={{position:"relative",flexShrink:0}}>
-            <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:12,color:"#636366",pointerEvents:"none"}}>⌕</span>
+            <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:12,color:"#B8916F",pointerEvents:"none"}}>⌕</span>
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder={t.search}
-              style={{background:"rgba(255,255,255,0.06)",border:"1.5px solid rgba(255,255,255,0.08)",
-                borderRadius:20,padding:"6px 12px 6px 26px",color:"#f5f5f7",fontSize:12,outline:"none",width:120,transition:"all 0.2s"}}
+              style={{background:"rgba(44,26,14,0.06)",border:"1.5px solid rgba(255,255,255,0.08)",
+                borderRadius:20,padding:"6px 12px 6px 26px",color:"#2C1A0E",fontSize:12,outline:"none",width:120,transition:"all 0.2s"}}
               onFocus={e=>{e.target.style.border="1.5px solid rgba(255,255,255,0.25)";e.target.style.width="155px";}}
               onBlur={e=>{e.target.style.border="1.5px solid rgba(255,255,255,0.08)";e.target.style.width="120px";}}/>
           </div>
           <select value={sort} onChange={e=>setSort(e.target.value)}
-            style={{background:"rgba(255,255,255,0.06)",border:"1.5px solid rgba(255,255,255,0.08)",
-              borderRadius:20,padding:"6px 11px",color:"#8e8e93",fontSize:12,outline:"none",cursor:"pointer",flexShrink:0}}>
-            <option value="latest" style={{background:"#1c1c1e"}}>{t.latest}</option>
-            <option value="rating" style={{background:"#1c1c1e"}}>{t.topRated}</option>
+            style={{background:"rgba(44,26,14,0.06)",border:"1.5px solid rgba(255,255,255,0.08)",
+              borderRadius:20,padding:"6px 11px",color:"#A0714F",fontSize:12,outline:"none",cursor:"pointer",flexShrink:0}}>
+            <option value="latest" style={{background:"#E8D5BC"}}>{t.latest}</option>
+            <option value="rating" style={{background:"#E8D5BC"}}>{t.topRated}</option>
           </select>
         </div>
       </div>
@@ -883,13 +883,13 @@ function App() {
       <div style={{maxWidth:1100,margin:"0 auto",padding:"18px 14px 44px",position:"relative",zIndex:1}}>
         {loading?(
           <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"60vh",gap:16}}>
-            <div style={{width:40,height:40,borderRadius:"50%",border:"3px solid rgba(255,255,255,0.1)",borderTop:"3px solid #8e8e93",animation:"spin 0.8s linear infinite"}}/>
-            <div style={{fontSize:13,color:"#636366"}}>{t.connecting}</div>
+            <div style={{width:40,height:40,borderRadius:"50%",border:"3px solid rgba(44,26,14,0.1)",borderTop:"3px solid #A0714F",animation:"spin 0.8s linear infinite"}}/>
+            <div style={{fontSize:13,color:"#B8916F"}}>{t.connecting}</div>
           </div>
         ):error?(
           <div style={{textAlign:"center",padding:"60px 20px"}}>
             <div style={{fontSize:14,color:"#ff453a",marginBottom:8}}>⚠️ Firebase Error</div>
-            <div style={{fontSize:12,color:"#636366"}}>{error}</div>
+            <div style={{fontSize:12,color:"#B8916F"}}>{error}</div>
           </div>
         ):list.length===0?(
           <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"65vh",padding:"40px 20px",position:"relative"}}>
@@ -906,7 +906,7 @@ function App() {
                 <div style={{position:"relative"}}>
                   <div style={{width:80,height:80,borderRadius:"50%",
                     background:"linear-gradient(135deg,rgba(254,44,85,0.15),rgba(24,119,242,0.15))",
-                    border:"1px solid rgba(255,255,255,0.08)",
+                    border:"1px solid rgba(44,26,14,0.1)",
                     display:"flex",alignItems:"center",justifyContent:"center",
                     backdropFilter:"blur(20px)"}}>
                     <div style={{width:40,height:40,borderRadius:"50%",
@@ -933,8 +933,8 @@ function App() {
 
             {/* Text */}
             <div style={{textAlign:"center",maxWidth:260}}>
-              <div style={{fontSize:22,fontWeight:900,color:"#f5f5f7",letterSpacing:-0.5,marginBottom:10,background:"linear-gradient(135deg,#f5f5f7,rgba(255,255,255,0.4))",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{t.vaultEmpty}</div>
-              <div style={{fontSize:13,color:"#636366",lineHeight:1.6,marginBottom:28}}>
+              <div style={{fontSize:22,fontWeight:900,color:"#2C1A0E",letterSpacing:-0.5,marginBottom:10,background:"linear-gradient(135deg,#f5f5f7,rgba(255,255,255,0.4))",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{t.vaultEmpty}</div>
+              <div style={{fontSize:13,color:"#B8916F",lineHeight:1.6,marginBottom:28}}>
                 {t.vaultDesc}
               </div>
               <button onClick={()=>setModal(true)} style={{
@@ -958,11 +958,11 @@ function App() {
       {/* Watermark */}
       <div style={{textAlign:"center",padding:"10px 16px 28px",position:"relative",zIndex:1}}>
         <div style={{display:"inline-flex",alignItems:"center",gap:7,
-          background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.08)",
+          background:"rgba(44,26,14,0.05)",border:"1px solid rgba(44,26,14,0.1)",
           borderRadius:20,padding:"6px 16px"}}>
-          <span style={{fontSize:11,color:"#636366"}}>{t.builtBy}</span>
+          <span style={{fontSize:11,color:"#B8916F"}}>{t.builtBy}</span>
           <span style={{fontSize:12,fontWeight:900,background:"linear-gradient(90deg,#FE2C55,#B33AB4)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Ali</span>
-          <span style={{fontSize:11,color:"#3a3a3c"}}>·</span>
+          <span style={{fontSize:11,color:"#C4A882"}}>·</span>
           <span style={{fontSize:12,fontWeight:900,background:"linear-gradient(90deg,#1877F2,#B33AB4)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>TMOMO Buddy</span>
         </div>
       </div>
