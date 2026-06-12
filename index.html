@@ -246,21 +246,36 @@ function Card({v,onUpdate,onDelete,onPlay,t}) {
   const p=P[v.platform]||P.TikTok;
   const s=STATUS_CFG[v.status]||STATUS_CFG.Saved;
 
-  const tilt=e=>{ const r=ref.current.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width-0.5; const y=(e.clientY-r.top)/r.height-0.5; ref.current.style.transform=`perspective(900px) rotateY(${x*8}deg) rotateX(${-y*8}deg) scale(1.01)`; };
-  const resetTilt=()=>{ ref.current.style.transform=""; };
+  const tilt=e=>{ 
+    const r=ref.current.getBoundingClientRect(); 
+    const x=(e.clientX-r.left)/r.width-0.5; 
+    const y=(e.clientY-r.top)/r.height-0.5; 
+    ref.current.style.transform=`perspective(1000px) rotateY(${x*10}deg) rotateX(${-y*10}deg) translateY(-4px) scale(1.01)`;
+  };
+  const resetTilt=()=>{ ref.current.style.transform="translateY(0px) scale(1)"; };
   const cycleStatus=()=>{ const i=STATUSES_EN.indexOf(v.status); onUpdate(v.key,{status:STATUSES_EN[(i+1)%STATUSES_EN.length]}); };
   const postComment=()=>{ if(!txt.trim()) return; onUpdate(v.key,{comments:[...(v.comments||[]),txt.trim()]}); setTxt(""); };
 
   return (
     <div ref={ref} className="card" onMouseMove={tilt} onMouseLeave={resetTilt} style={{transition:"transform 0.18s ease"}}>
-      <div style={{background:"rgba(237,220,200,0.85)",backdropFilter:"blur(20px)",
-        border:"1px solid rgba(44,26,14,0.1)",
-        borderTop:"1px solid rgba(255,255,255,0.6)",
-        borderLeft:"1px solid rgba(255,255,255,0.5)",
-        borderRadius:20,overflow:"hidden",
-        boxShadow:"0 4px 20px rgba(44,26,14,0.1)",transition:"box-shadow 0.25s"}}
-        onMouseEnter={e=>e.currentTarget.style.boxShadow=`0 12px 36px rgba(44,26,14,0.18),0 0 0 1.5px ${p.accent}44`}
-        onMouseLeave={e=>e.currentTarget.style.boxShadow="0 4px 20px rgba(44,26,14,0.1)"}>
+      <div style={{
+          background:"rgba(245,235,220,0.95)",
+          backdropFilter:"blur(20px)",
+          border:"1px solid rgba(255,255,255,0.8)",
+          borderBottom:"1px solid rgba(44,26,14,0.08)",
+          borderRight:"1px solid rgba(44,26,14,0.06)",
+          borderRadius:22,overflow:"hidden",
+          boxShadow:"0 2px 0 rgba(255,255,255,0.9) inset, 0 8px 16px rgba(44,26,14,0.08), 0 20px 40px rgba(44,26,14,0.1), 0 1px 3px rgba(44,26,14,0.06)",
+          transform:"translateY(0px)",
+          transition:"transform 0.25s ease, box-shadow 0.25s ease"}}
+        onMouseEnter={e=>{
+          e.currentTarget.style.transform="translateY(-6px) scale(1.01)";
+          e.currentTarget.style.boxShadow=`0 2px 0 rgba(255,255,255,0.9) inset, 0 16px 32px rgba(44,26,14,0.14), 0 32px 60px rgba(44,26,14,0.12), 0 0 0 1.5px ${p.accent}33`;
+        }}
+        onMouseLeave={e=>{
+          e.currentTarget.style.transform="translateY(0px) scale(1)";
+          e.currentTarget.style.boxShadow="0 2px 0 rgba(255,255,255,0.9) inset, 0 8px 16px rgba(44,26,14,0.08), 0 20px 40px rgba(44,26,14,0.1), 0 1px 3px rgba(44,26,14,0.06)";
+        }}>
 
         {/* Thumbnail */}
         <div onClick={()=>onPlay(v)} style={{height:170,cursor:"pointer",position:"relative",overflow:"hidden",
@@ -611,7 +626,7 @@ function App() {
             </div>
           </div>
         ) : (
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:20}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:24,perspective:"1000px"}}>
             {list.map(v=><Card key={v.key} v={v} onUpdate={updateVideo} onDelete={deleteVideo} onPlay={setPlaying} t={t}/>)}
           </div>
         )}
