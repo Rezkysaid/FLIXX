@@ -517,16 +517,34 @@ function App() {
         <div style={{background:"rgba(240,230,215,0.96)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(44,26,14,0.08)"}}>
           {/* Lang + user row */}
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 18px 6px"}}>
-            <div style={{display:"flex",gap:5}}>
+            {/* Lang pills */}
+            <div style={{display:"flex",gap:4}}>
               {Object.entries(LANG_LABELS).map(([code,label])=>(
-                <button key={code} onClick={()=>setLang(code)} style={{padding:"3px 11px",borderRadius:20,fontSize:11,fontWeight:700,cursor:"pointer",border:`1px solid ${lang===code?"rgba(44,26,14,0.3)":"rgba(44,26,14,0.1)"}`,background:lang===code?"rgba(44,26,14,0.12)":"rgba(44,26,14,0.04)",color:lang===code?"#2C1A0E":"#A0714F",transition:"all 0.15s"}}>{label}</button>
+                <button key={code} onClick={()=>setLang(code)} style={{
+                  padding:"5px 13px",borderRadius:20,fontSize:11,fontWeight:800,cursor:"pointer",
+                  border:`1px solid ${lang===code?"rgba(44,26,14,0.25)":"rgba(44,26,14,0.08)"}`,
+                  background:lang===code?"#2C1A0E":"rgba(44,26,14,0.04)",
+                  color:lang===code?"#F5EFE6":"#A0714F",
+                  boxShadow:lang===code?"0 2px 8px rgba(44,26,14,0.2)":"none",
+                  transition:"all 0.15s"}}>{label}</button>
               ))}
             </div>
+
+            {/* User chip */}
             {userName && (
-              <div style={{display:"flex",alignItems:"center",gap:7}}>
-                <div style={{width:24,height:24,borderRadius:"50%",background:"linear-gradient(135deg,#2C1A0E,#8B4513)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:900,color:"#F5EFE6"}}>{userName.charAt(0).toUpperCase()}</div>
-                <span style={{fontSize:12,color:"#6B4226",fontWeight:600}}>{userName}</span>
-                <button onClick={()=>{localStorage.removeItem("tv_username");setUserName(null);}} style={{background:"none",border:"none",cursor:"pointer",fontSize:10,color:"#B8916F",padding:0}}>tukar</button>
+              <div style={{display:"flex",alignItems:"center",gap:6,
+                background:"rgba(44,26,14,0.06)",border:"1px solid rgba(44,26,14,0.1)",
+                borderRadius:20,padding:"4px 12px 4px 5px"}}>
+                <div style={{width:22,height:22,borderRadius:"50%",
+                  background:"linear-gradient(135deg,#2C1A0E,#8B4513)",
+                  display:"flex",alignItems:"center",justifyContent:"center",
+                  fontSize:10,fontWeight:900,color:"#F5EFE6",flexShrink:0}}>
+                  {userName.charAt(0).toUpperCase()}
+                </div>
+                <span style={{fontSize:12,color:"#4A2C1A",fontWeight:700,maxWidth:80,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{userName}</span>
+                <button onClick={()=>{localStorage.removeItem("tv_username");setUserName(null);}}
+                  style={{background:"none",border:"none",cursor:"pointer",fontSize:10,
+                    color:"#B8916F",padding:0,marginLeft:2,flexShrink:0}}>✕</button>
               </div>
             )}
           </div>
